@@ -1,3 +1,5 @@
+import { add_, type List,type Task } from "@/composables/utils";
+
 let todoListsMock = [//collection
     { //document
         created: Date.now(),
@@ -14,22 +16,13 @@ let todoListsMock = [//collection
         ]
     }
 ]
-interface Task {
-    title: string,
-    done: boolean
-}
-
-interface List{
-    created: number,
-    listTitle: string,
-    tasks:Task[]
-}
 
 export const getList = (collectionName:string) => {
     return todoListsMock.find((item)=>item.listTitle == collectionName)
 }
 
 export const createList = (listTitle:string)=> {
+    listTitle = add_(listTitle)
     let list:List = {
         listTitle,
         created: Date.now(),
@@ -41,4 +34,20 @@ export const createList = (listTitle:string)=> {
         throw "Não foi possível criar a Lista"
     }
     return list
+}
+
+export const createTask = (title:string, listTitle:string) => {
+    let task:Task = {
+        title,
+        done:false
+    } 
+    console.log(task)
+    const index = todoListsMock.findIndex((item)=>item.listTitle == listTitle)
+    try{
+        console.log(index)
+        todoListsMock[index].tasks.push(task)
+    }catch{
+        throw "Não foi possível criar a tarefa"
+    }
+    return todoListsMock[index]
 }

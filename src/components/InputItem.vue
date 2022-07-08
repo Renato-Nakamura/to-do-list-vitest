@@ -10,21 +10,22 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
-    sendText: Function,
+    sendTextFunction: Function,
   },
   data() {
     return {
-        teste: ''
-    }
+      teste: "",
+    };
   },
-    methods: {
-        send(text:string){
-            console.log(text)
-            
-        },
+  methods: {
+    send(text: string) {
+      this.$emit("text", text,this.clear);
+    },
+    clear() {
+      this.teste = "";
+    },
   },
 });
-
 </script>
 
 <style scoped></style>

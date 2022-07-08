@@ -5,6 +5,6 @@ import TasksViewVue from "../TasksView.vue";
 describe('TasksView',()=>{
     it('renders properly',()=>{
         const wrapper = mount(TasksViewVue,{props:{taskCollection:'Teste_Lista_Tarefas'}})
-        expect(wrapper.text()).toContain('Teste Lista Tarefas')
+        expect(wrapper.find('h1')).toBeTruthy()
     })
 })
