@@ -4,7 +4,7 @@ import { remove_ } from "@/composables/utils";
 import type { List,Task } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
-import { getList, createTask } from "@/services/listsService";
+import { getList, createTask, saveRecentLists } from "@/services/listsService";
 
 export default defineComponent({
   methods: {
@@ -30,6 +30,7 @@ export default defineComponent({
     this.listName = this.$route?.params.collection.toString();
     const res = getList(this.listName);
     this.listCollection = res && res.listTitle? res: undefined
+    saveRecentLists(this.listName)
   },
 });
 </script>
@@ -37,13 +38,11 @@ export default defineComponent({
 <template>
   <div v-if="listCollection">
     <h1>
-      {{
-       remove_(listCollection.listTitle)
-      }}
+      {{ remove_(listCollection.listTitle) }}
     </h1>
     <InputItem @text="callCreateTask"></InputItem>
-    <div v-for=" task in listCollection.tasks">
-    <TaskItem :task="task"></TaskItem>
+    <div v-for="task in listCollection.tasks">
+      <TaskItem :task="task"></TaskItem>
     </div>
   </div>
   <div v-else>
