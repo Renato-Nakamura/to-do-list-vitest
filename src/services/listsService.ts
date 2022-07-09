@@ -43,7 +43,6 @@ export const createTask = (title:string, listTitle:string) => {
     } 
     const index = todoListsMock.findIndex((item)=>item.listTitle == listTitle)
     try{
-        console.log(index)
         todoListsMock[index].tasks.push(task)
     }catch(e){
         throw "Não foi possível criar a tarefa: " + e
@@ -67,4 +66,13 @@ export const getRecentLists = ()=> {
     const lists = localStorage.getItem('lists')
     if(!lists) return
     return JSON.parse(lists)
+}
+
+export const removeFromRecentLists =  (listTitle:string) => {
+    const lists = localStorage.getItem('lists')
+    if(!lists) return
+    let listsArray:string[] =  JSON.parse(lists)
+    const index = listsArray.indexOf(listTitle)
+    listsArray.splice(index,1)
+    localStorage.setItem('lists',JSON.stringify(listsArray))
 }

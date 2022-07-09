@@ -4,7 +4,7 @@ import { remove_ } from "@/composables/utils";
 import type { List,Task } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
-import { getList, createTask, saveRecentLists } from "@/services/listsService";
+import { getList, createTask, saveRecentLists, removeFromRecentLists } from "@/services/listsService";
 
 export default defineComponent({
   methods: {
@@ -29,7 +29,13 @@ export default defineComponent({
   beforeMount() {
     this.listName = this.$route?.params.collection.toString();
     const res = getList(this.listName);
-    this.listCollection = res && res.listTitle? res: undefined
+    if(!res){
+      removeFromRecentLists(this.listName)
+      this.listCollection = undefined
+
+      return
+    }
+    this.listCollection = res
     saveRecentLists(this.listName)
   },
 });

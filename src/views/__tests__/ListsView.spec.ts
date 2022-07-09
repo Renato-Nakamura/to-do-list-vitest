@@ -5,6 +5,6 @@ import ListsViewVue from "../ListsView.vue";
 describe('lists component', ()=>{
     it('renders properly',()=>{
         const wrapper = mount(ListsViewVue)
-        expect(wrapper.text()).toContain('Listas Favoritas')
+        expect(wrapper.text()).toContain('Crie uma lista')
     })
 })

@@ -29,9 +29,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1>Listas Favoritas</h1>
-  <span>Aqui estão as suas listas de afazeres favoritas</span>
+  <h1>Crie uma lista de afazeres</h1>
   <InputItem @text="callCreateList"></InputItem>
+  <span>Recentes</span>
   <div v-for="list in recentLists">
       <ListItem :listTitle="list"/>
   </div>
