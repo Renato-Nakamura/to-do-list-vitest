@@ -6,7 +6,7 @@ let todoListsMock = [//collection
         listTitle: "example",
         tasks:[//collection
             {//doc
-                title: 'task example 1',
+                title: 'task',
                 done: false
             },
             {//doc
@@ -47,6 +47,21 @@ export const createTask = (title:string, listTitle:string) => {
     }catch(e){
         throw "Não foi possível criar a tarefa: " + e
     }
+    return todoListsMock[index]
+}
+
+export const changeTask = (collectionName:string,taskName:string,props:keyof Task,value:any) => {
+    console.log(collectionName)
+    const index = todoListsMock.findIndex((item)=>item.listTitle == collectionName)
+    const tasks =todoListsMock[index].tasks
+    const indexTask = tasks.findIndex((item)=>item.title == taskName)
+    try{
+        tasks[indexTask][props] = value
+    }catch(e){
+        throw "Não foi possível alterar a tarefa: " + e
+
+    }
+    console.log(todoListsMock)
     return todoListsMock[index]
 }
 

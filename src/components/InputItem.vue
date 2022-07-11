@@ -1,7 +1,7 @@
 <template>
   <div>
-    <input @keyup.enter="send(teste)" v-model="teste" type="text" />
-    <button @click="send(teste)">Enviar</button>
+    <input @keyup.enter="$emit('text', textInput,clear)" v-model="textInput" type="text" />
+    <button @click="$emit('text', textInput,clear)">Enviar</button>
   </div>
 </template>
 
@@ -11,20 +11,21 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     sendTextFunction: Function,
+    value:String
   },
   data() {
     return {
-      teste: "",
+      textInput: "",
     };
   },
   methods: {
-    send(text: string) {
-      this.$emit("text", text,this.clear);
-    },
     clear() {
-      this.teste = "";
+      this.textInput = "";
     },
   },
+  beforeMount(){
+    if(this.value) this.textInput = this.value
+  }
 });
 </script>
 

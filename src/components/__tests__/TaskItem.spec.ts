@@ -9,7 +9,6 @@ describe('TaskItem component',()=>{
     }
     it('renders properly',()=>{
         const wrapper = mount(TaskItemVue,{props:{task: task}})
-        expect(wrapper.text()).toContain(task.title)
-        expect(wrapper.find('span').exists()).toBe(task.done)
+        expect(wrapper.find('input').element.checked).toBe(task.done)
     })
 })

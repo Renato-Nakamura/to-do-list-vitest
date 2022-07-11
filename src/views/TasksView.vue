@@ -4,16 +4,19 @@ import { remove_ } from "@/composables/utils";
 import type { List,Task } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
-import { getList, createTask, saveRecentLists, removeFromRecentLists } from "@/services/listsService";
+import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask } from "@/services/listsService";
 
 export default defineComponent({
   methods: {
     remove_,
     createTask,
-     callCreateTask(text:string, clearFunction:Function){
-      this.listCollection =  JSON.parse(JSON.stringify(createTask(text,this.listName)))
-      // text = ''
+    changeTask,
+    callCreateTask(text:string, clearFunction:Function){
+      this.updateTasks(createTask(text,this.listName))
       clearFunction()
+    },
+    updateTasks(value:List){
+      this.listCollection =  JSON.parse(JSON.stringify(value))
     }
   },
   components: {
@@ -32,7 +35,6 @@ export default defineComponent({
     if(!res){
       removeFromRecentLists(this.listName)
       this.listCollection = undefined
-
       return
     }
     this.listCollection = res
@@ -48,7 +50,11 @@ export default defineComponent({
     </h1>
     <InputItem @text="callCreateTask"></InputItem>
     <div v-for="task in listCollection.tasks">
-      <TaskItem :task="task"></TaskItem>
+      <TaskItem
+        :task="task"
+        :listName="listName"
+        :key="task.title"
+      ></TaskItem>
     </div>
   </div>
   <div v-else>

@@ -33,6 +33,6 @@ export default defineComponent({
   <InputItem @text="callCreateList"></InputItem>
   <span>Recentes</span>
   <div v-for="list in recentLists">
-      <ListItem :listTitle="list"/>
+      <ListItem :listTitle="list" :key="list"/>
   </div>
 </template>
