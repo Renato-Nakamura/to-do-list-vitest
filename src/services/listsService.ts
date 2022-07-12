@@ -17,11 +17,23 @@ let todoListsMock = [//collection
     }
 ]
 
-export const getList = (collectionName:string) => {
-    return todoListsMock.find((item)=>item.listTitle == collectionName)
+export const getList = async (collectionName:string) => {
+    let list
+    try{
+        const res = await fetch('https://to-do-back.vercel.app/'+collectionName,{
+            method:"GET"
+        })
+        list = await res.json()
+    }
+    catch(e){
+        throw "Não foi possível acessar a Lista: " + e
+    }
+    // return todoListsMock.find((item)=>item.listTitle == collectionName)
+    console.log(list)
+    return list[0]
 }
 
-export const createList = (listTitle:string)=> {
+export const createList = async (listTitle:string)=> {
     listTitle = add_(listTitle)
     let list:List = {
         listTitle,
@@ -29,43 +41,64 @@ export const createList = (listTitle:string)=> {
         tasks: []
     }
     try{
-        todoListsMock.push(list)
+        const res = await fetch('https://to-do-back.vercel.app/',{
+            headers: { 'Content-type': 'application/json' },
+            method:'POST',
+            body: JSON.stringify(list)
+        })
+        list = await res.json()
     }catch(e){
         throw "Não foi possível criar a Lista: " + e
     }
     return list
 }
 
-export const createTask = (title:string, listTitle:string) => {
+export const createTask = async (title:string, listCollection:List) => {
     let task:Task = {
         title,
         done:false
     } 
-    const index = todoListsMock.findIndex((item)=>item.listTitle == listTitle)
+    listCollection.tasks.push(task)
+    // const index = todoListsMock.findIndex((item)=>item.listTitle == listTitle)
     try{
-        todoListsMock[index].tasks.push(task)
+        const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
+            headers: { 'Content-type': 'application/json' },
+            method:'PUT',
+            body: JSON.stringify(listCollection)
+        })
+        listCollection = await res.json()
+        // todoListsMock[index].tasks.push(task)
     }catch(e){
         throw "Não foi possível criar a tarefa: " + e
     }
-    return todoListsMock[index]
+    return listCollection
 }
 
-export const changeTask = (collectionName:string,taskName:string,props:keyof Task,value:any) => {
-    console.log(collectionName)
-    const index = todoListsMock.findIndex((item)=>item.listTitle == collectionName)
-    const tasks =todoListsMock[index].tasks
-    const indexTask = tasks.findIndex((item)=>item.title == taskName)
+export const changeTask = async (listCollection:List,taskName:string,props:keyof Task,value:string | boolean) => {
+    console.log(listCollection)
+    // const index = todoListsMock.findIndex((item)=>item.listTitle == _id)
+    // const tasks =todoListsMock[index].tasks
+    // const indexTask = tasks.findIndex((item)=>item.title == taskName)
+    const indexTask = listCollection.tasks.findIndex((item)=>item.title == taskName)
+    listCollection.tasks[indexTask][props] = value
     try{
-        tasks[indexTask][props] = value
+        // tasks[indexTask][props] = value
+        const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
+            headers: { 'Content-type': 'application/json' },
+            method:'PUT',
+            body: JSON.stringify(listCollection)
+        })
+        listCollection = await res.json()
     }catch(e){
         throw "Não foi possível alterar a tarefa: " + e
 
     }
-    console.log(todoListsMock)
-    return todoListsMock[index]
+    // console.log(todoListsMock)
+    return listCollection
 }
 
 export const saveRecentLists = (listName:string)=>{
+    if(!listName) return
     let lists:string[] = []
     const saved = localStorage.getItem('lists')
     if(saved){

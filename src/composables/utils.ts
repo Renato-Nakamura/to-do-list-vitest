@@ -10,5 +10,6 @@ export interface Task {
 export interface List {
   created: number;
   listTitle: string;
+  _id:string;
   tasks: Task[];
 }

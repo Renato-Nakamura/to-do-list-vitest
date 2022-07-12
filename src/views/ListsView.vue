@@ -3,6 +3,7 @@ import ListItem from "@/components/ListItem.vue";
 import { createList, getRecentLists } from "@/services/listsService";
 import InputItem from "../components/InputItem.vue";
 import { defineComponent } from "vue";
+import { add_ } from "@/composables/utils";
 
 export default defineComponent({
   components: {
@@ -10,10 +11,10 @@ export default defineComponent({
     InputItem,
   },
   methods: {
-    callCreateList(listTitle: string, clearFunction: Function) {
-      const res = createList(listTitle);
+    async callCreateList(listTitle: string, clearFunction: Function) {
+      const res = await createList(listTitle);
       clearFunction();
-      if (res) this.$router.push("/list/" + listTitle);
+      if (res) this.$router.push("/list/" + add_(listTitle));
     },
   },
   data() {

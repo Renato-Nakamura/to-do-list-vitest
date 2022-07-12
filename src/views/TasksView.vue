@@ -1,18 +1,30 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { remove_ } from "@/composables/utils";
-import type { List,Task } from "@/composables/utils";
+import type { List } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
 import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask } from "@/services/listsService";
 
 export default defineComponent({
+    async beforeCreate() {
+    this.listName = this.$route?.params.collection.toString();
+    const res = await getList(this.listName);
+    if(!res){
+      removeFromRecentLists(this.listName)
+      this.listCollection = undefined
+      return
+    }
+    this.listCollection = res
+    console.log(res._id)
+    saveRecentLists(this.listName)
+  },
   methods: {
     remove_,
     createTask,
     changeTask,
-    callCreateTask(text:string, clearFunction:Function){
-      this.updateTasks(createTask(text,this.listName))
+    async callCreateTask(text:string, clearFunction:Function){
+      if(this.listCollection) this.updateTasks( await createTask(text,this.listCollection))
       clearFunction()
     },
     updateTasks(value:List){
@@ -26,20 +38,10 @@ export default defineComponent({
   data() {
     return {
       listName: "",
-      listCollection: {} as List | undefined,
+      listCollection: undefined as List | undefined,
     };
   },
-  beforeMount() {
-    this.listName = this.$route?.params.collection.toString();
-    const res = getList(this.listName);
-    if(!res){
-      removeFromRecentLists(this.listName)
-      this.listCollection = undefined
-      return
-    }
-    this.listCollection = res
-    saveRecentLists(this.listName)
-  },
+
 });
 </script>
 
@@ -49,11 +51,11 @@ export default defineComponent({
       {{ remove_(listCollection.listTitle) }}
     </h1>
     <InputItem @text="callCreateTask"></InputItem>
-    <div v-for="task in listCollection.tasks">
+    <div v-for="tasks in listCollection.tasks">
       <TaskItem
-        :task="task"
-        :listName="listName"
-        :key="task.title"
+        :task="tasks"
+        :listCollection="listCollection"
+        :key="tasks.title"
       ></TaskItem>
     </div>
   </div>

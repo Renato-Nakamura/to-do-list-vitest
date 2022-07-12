@@ -1,18 +1,20 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import InputItem from "./InputItem.vue";
 import { changeTask } from "@/services/listsService";
+import type { List } from "@/composables/utils";
+
 export default defineComponent({
   props: {
     task: Object,
-    listName: String,
+    listCollection: Object as PropType<List>,
   },
   emits: ["checkbox"],
   components: { InputItem },
   methods: {
     changeTask,
     updateText(text:string){
-        changeTask(this.listName ? this.listName : '', this.task?.title, 'title', text)
+        if(this.listCollection)changeTask(this.listCollection, this.task?.title, 'title', text)
     }
   },
 });
@@ -25,8 +27,8 @@ export default defineComponent({
       name="done"
       id="done"
       :checked="task?.done"
-      @click="
-        changeTask(listName ? listName : '', task?.title, 'done', !task?.done)
+      @click="listCollection &&
+        changeTask(listCollection, task?.title, 'done', !task?.done)
       "
     />
     <InputItem :value="task?.title" @text="updateText"></InputItem>
