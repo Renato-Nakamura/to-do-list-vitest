@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <input @keyup.enter="$emit('text', textInput,clear)" v-model="textInput" type="text" />
-    <button @click="$emit('text', textInput,clear)">Enviar</button>
+  <div class="flex flex-col mx-auto w-60">
+    <input placeholder="Insira o nome da lista" @keyup.enter="$emit('text', textInput,clear)" v-model="textInput" type="text" class="bg-transparent border-solid border-b-2 border-[color:var(--primary)] mb-3"/>
+    <button class="bg-[color:var(--primary)] text-[color:var(--quaternary)] font-bold p-1" @click="$emit('text', textInput,clear)">CRIAR</button>
   </div>
 </template>
 

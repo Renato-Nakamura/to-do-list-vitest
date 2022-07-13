@@ -9,7 +9,8 @@ export const getList = async (collectionName:string) => {
         list = await res.json()
     }
     catch(e){
-        throw "Não foi possível acessar a Lista: " + e
+        console.error("Não foi possível acessar a Lista: " + e)
+        return undefined
     }
     return list[0]
 }
@@ -29,7 +30,8 @@ export const createList = async (listTitle:string)=> {
         })
         list = await res.json()
     }catch(e){
-        throw "Não foi possível criar a Lista: " + e
+        console.error("Não foi possível criar a Lista: " + e)
+        return undefined
     }
     return list
 }
@@ -48,7 +50,8 @@ export const createTask = async (title:string, listCollection:List) => {
         })
         listCollection = await res.json()
     }catch(e){
-        throw "Não foi possível criar a tarefa: " + e
+        console.error("Não foi possível criar a tarefa: " + e)
+        return undefined
     }
     return listCollection
 }
@@ -64,8 +67,8 @@ export const changeTask = async (listCollection:List,taskName:string,props:keyof
         })
         listCollection = await res.json()
     }catch(e){
-        throw "Não foi possível alterar a tarefa: " + e
-
+        console.error("Não foi possível alterar a tarefa: " + e)
+        return undefined
     }
     return listCollection
 }

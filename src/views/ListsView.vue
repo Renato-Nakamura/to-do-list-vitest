@@ -18,9 +18,9 @@ export default defineComponent({
     },
   },
   data() {
-    return{
-        recentLists: []
-    }
+    return {
+      recentLists: [],
+    };
   },
   beforeMount() {
     const lists = getRecentLists();
@@ -30,10 +30,26 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1>Crie uma lista de afazeres</h1>
-  <InputItem @text="callCreateList"></InputItem>
-  <span>Recentes</span>
-  <div v-for="list in recentLists">
-      <ListItem :listTitle="list" :key="list"/>
+  <div class="flex flex-col justify-around h-5/6">
+    <div class="flex flex-col items-center">
+      <h1 class="text-main text-[color:var(--primary)] text-7xl">MISTY</h1>
+      <h2 class="text-[color:var(--primary)] text-2xl">
+        Crie sua lista de tarefas
+      </h2>
+    </div>
+    <InputItem @text="callCreateList"></InputItem>
+    <div></div>
+  </div>
+  <div class="flex flex-col items-center mt-20">
+    <span>Recentes</span>
+    <div v-for="list in recentLists">
+      <ListItem :listTitle="list" :key="list" />
+    </div>
   </div>
 </template>
+
+<style>
+.text-main {
+  font-family: "Montserrat Subrayada", sans-serif;
+}
+</style>

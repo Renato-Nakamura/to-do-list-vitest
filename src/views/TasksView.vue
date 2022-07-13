@@ -37,7 +37,7 @@ export default defineComponent({
   data() {
     return {
       listName: "",
-      listCollection: undefined as List | undefined,
+      listCollection: null as List | undefined | null,
     };
   },
 
@@ -58,7 +58,10 @@ export default defineComponent({
       ></TaskItem>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="listCollection === undefined">
     <h1>Não foi possível encontrar a lista</h1>
+  </div>
+  <div v-else>
+    <p>Carregando</p>
   </div>
 </template>
