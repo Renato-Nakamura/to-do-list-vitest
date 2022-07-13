@@ -11,7 +11,7 @@ export default {
 </script>
 <template>
   <div>
-    <RouterLink :to="listTitle?'/list/'+listTitle: '/'">
+    <RouterLink :to="listTitle?'/'+listTitle: '/'">
       <h2>{{ remove_(listTitle) }}</h2>
     </RouterLink>
       <!-- <button>Remove</button> -->

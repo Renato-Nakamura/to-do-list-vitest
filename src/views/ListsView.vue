@@ -14,7 +14,7 @@ export default defineComponent({
     async callCreateList(listTitle: string, clearFunction: Function) {
       const res = await createList(listTitle);
       clearFunction();
-      if (res) this.$router.push("/list/" + add_(listTitle));
+      if (res) this.$router.push("/" + add_(listTitle));
     },
   },
   data() {

@@ -11,7 +11,7 @@ const router = createRouter({
       component: ListsView
     },
     {
-      path: '/list/:collection',
+      path: '/:collection',
       name:'ListViews',
       component: ()=> import('../views/TasksView.vue')
     }

@@ -13,3 +13,20 @@ export interface List {
   _id:string;
   tasks: Task[];
 }
+
+let todoListsMock = [//collection
+    { //document
+        created: Date.now(),
+        listTitle: "example",
+        tasks:[//collection
+            {//doc
+                title: 'task',
+                done: false
+            },
+            {//doc
+                title: 'task example 2',
+                done: true
+            }
+        ]
+    }
+]

@@ -7,7 +7,7 @@ import InputItem from "../components/InputItem.vue";
 import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask } from "@/services/listsService";
 
 export default defineComponent({
-    async beforeCreate() {
+    async beforeMount() {
     this.listName = this.$route?.params.collection.toString();
     const res = await getList(this.listName);
     if(!res){
@@ -16,7 +16,6 @@ export default defineComponent({
       return
     }
     this.listCollection = res
-    console.log(res._id)
     saveRecentLists(this.listName)
   },
   methods: {
