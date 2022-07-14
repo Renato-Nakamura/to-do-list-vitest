@@ -23,10 +23,10 @@ export default defineComponent({
     createTask,
     changeTask,
     async callCreateTask(text:string, clearFunction:Function){
-      if(this.listCollection) this.updateTasks( await createTask(text,this.listCollection))
+      this.updateTasks( await createTask(text,this.listCollection))
       clearFunction()
     },
-    updateTasks(value:List){
+    updateTasks(value:List | undefined | null){
       this.listCollection =  JSON.parse(JSON.stringify(value))
     }
   },

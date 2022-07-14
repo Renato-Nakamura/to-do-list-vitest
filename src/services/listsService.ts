@@ -20,7 +20,7 @@ export const createList = async (listTitle:string)=> {
     let list:List = {
         listTitle,
         created: Date.now(),
-        tasks: []
+        tasks: [],
     }
     try{
         const res = await fetch('https://to-do-back.vercel.app/',{
@@ -36,7 +36,8 @@ export const createList = async (listTitle:string)=> {
     return list
 }
 
-export const createTask = async (title:string, listCollection:List) => {
+export const createTask = async (title:string, listCollection: List | undefined | null) => {
+    if(!listCollection) return undefined
     let task:Task = {
         title,
         done:false
@@ -58,7 +59,17 @@ export const createTask = async (title:string, listCollection:List) => {
 
 export const changeTask = async (listCollection:List,taskName:string,props:keyof Task,value:string | boolean) => {
     const indexTask = listCollection.tasks.findIndex((item)=>item.title == taskName)
-    listCollection.tasks[indexTask][props] = value
+    if(props == 'done' && typeof value == 'boolean'){
+        listCollection.tasks[indexTask]['done'] = value
+    }else if(typeof value =='string'){
+        listCollection.tasks[indexTask]['title'] = value
+    }
+    // console.log('oioi')
+    // for(let i in listCollection.tasks[indexTask]){
+    //     if(typeof listCollection.tasks[indexTask][i] == typeof value){
+    //         console.log(i,'rer')
+    //     }
+    // }
     try{
         const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
             headers: { 'Content-type': 'application/json' },
