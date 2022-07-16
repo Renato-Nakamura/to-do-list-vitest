@@ -1,16 +1,19 @@
 import { add_, type List,type Task } from "@/composables/utils";
 import { useToast } from "vue-toastification";
 const toast = useToast()
+const BASE_URL = 'https://to-do-back.vercel.app/'
 export const getList = async (collectionName:string) => {
     let list
     try{
-        const res = await fetch('https://to-do-back.vercel.app/'+collectionName,{
+        const res = await fetch(BASE_URL+collectionName,{
             method:"GET"
         })
         list = await res.json()
+        if(list.message) throw list.message
+
     }
     catch(e){
-        console.error("Não foi possível acessar a Lista: " + e)
+        toast.error("Não foi possível acessar a Lista: " + e)
         return undefined
     }
     return list[0]
@@ -18,20 +21,20 @@ export const getList = async (collectionName:string) => {
 
 export const createList = async (listTitle:string)=> {
     listTitle = add_(listTitle)
-    let list:List = {
+    let list:List | any = {
         listTitle,
         created: Date.now(),
         tasks: [],
     }
     try{
-        const res = await fetch('https://to-do-back.vercel.app/',{
+        const res = await fetch(BASE_URL,{
             headers: { 'Content-type': 'application/json' },
             method:'POST',
             body: JSON.stringify(list)
         })
         list = await res.json()
+        if(list.message) throw list.message
     }catch(e){
-        toast.error('teste de toast')
 
         toast.error("Não foi possível criar a Lista: " + e)
         return undefined
@@ -47,14 +50,16 @@ export const createTask = async (title:string, listCollection: List | undefined 
     } 
     listCollection.tasks.push(task)
     try{
-        const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
+        const res = await fetch(BASE_URL+listCollection._id,{
             headers: { 'Content-type': 'application/json' },
             method:'PUT',
             body: JSON.stringify(listCollection)
         })
         listCollection = await res.json()
+        if((await res.json()).message) throw (await res.json()).message
+
     }catch(e){
-        console.error("Não foi possível criar a tarefa: " + e)
+        toast.error("Não foi possível criar a tarefa: " + e)
         return undefined
     }
     return listCollection
@@ -69,14 +74,15 @@ export const changeTask = async (listCollection:List,taskName:string,props:keyof
     }
 
     try{
-        const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
+        const res = await fetch(BASE_URL+listCollection._id,{
             headers: { 'Content-type': 'application/json' },
             method:'PUT',
             body: JSON.stringify(listCollection)
         })
         listCollection = await res.json()
+        if((await res.json()).message) throw (await res.json()).message
     }catch(e){
-        console.error("Não foi possível alterar a tarefa: " + e)
+        toast.error("Não foi possível alterar a tarefa: " + e)
         return undefined
     }
     return listCollection
@@ -91,7 +97,6 @@ export const saveRecentLists = (listName:string)=>{
     }
     if(!lists.find(list => list == listName)) lists.push(listName)
     localStorage.setItem('lists',JSON.stringify(lists))
-    console.log(lists)
     return lists
 }
 
@@ -106,7 +111,6 @@ export const removeFromRecentLists =  (listTitle:string) => {
     if(!lists) return
     let listsArray:string[] =  JSON.parse(lists)
     const index = listsArray.indexOf(listTitle)
-    console.log(index,listTitle)
     if(index >= 0)listsArray.splice(index,1)
     localStorage.setItem('lists',JSON.stringify(listsArray))
 }
