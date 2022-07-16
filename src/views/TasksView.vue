@@ -45,12 +45,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="listCollection">
-    <h1>
-      {{ remove_(listCollection.listTitle) }}
-    </h1>
-    <InputItem @text="callCreateTask"></InputItem>
-    <div v-for="tasks in listCollection.tasks">
+  <div v-if="listCollection" class="flex flex-col h-full">
+    <div class="mx-auto mb-10">
+      <h1 class="text-5xl text-center py-5 mt-20">
+        {{ remove_(listCollection.listTitle) }}
+      </h1>
+      <InputItem @text="callCreateTask" buttonName="ADICIONAR"></InputItem>
+    </div>
+    <div v-for="tasks in listCollection.tasks" class="">
       <TaskItem
         :task="tasks"
         :listCollection="listCollection"
@@ -59,9 +61,34 @@ export default defineComponent({
     </div>
   </div>
   <div v-else-if="listCollection === undefined">
-    <h1>Não foi possível encontrar a lista</h1>
+    <div class="mx-auto mb-10 flex flex-col items-center">
+      <h1 class="text-5xl text-center py-5 mt-20">
+        {{ remove_(listName) }}
+      </h1>
+      <h2 class="text-xl text-center mt-5">
+        Parece que essa lista não existe :(
+      </h2>
+      <span class="text-sm my-2">Tente criar a sua lista na tela inicial!</span>
+      <RouterLink to="/">
+        <button
+          class="bg-[color:var(--primary)] text-[color:var(--quaternary)] font-bold px-3 py-1"
+        >
+          Voltar
+        </button>
+      </RouterLink>
+    </div>
   </div>
   <div v-else>
-    <p>Carregando</p>
+    <!-- <p>Carregando</p> -->
+    <div class="mx-auto mb-10 flex flex-col items-center">
+      <h1 class="text-5xl text-center py-5 mt-20">
+        {{ remove_(listName) }}
+      </h1>
+      <InputItem @text="callCreateTask" buttonName="ADICIONAR" :disabled="true"></InputItem>
+
+    </div>
+    <div class="animate-pulse flex flex-col items-center mt-16">
+      <div v-for="i of [1,2,3,4,5]" class="h-10 bg-[color:var(--tertiary)] rounded w-64 my-1"></div>
+    </div>
   </div>
 </template>

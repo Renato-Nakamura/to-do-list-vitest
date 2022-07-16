@@ -17,7 +17,8 @@
     "@heroicons/vue": "^1.0.6",
     "commitizen-emoji": "^1.0.5",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.16"
+    "vue-router": "^4.0.16",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@types/jsdom": "^16.2.14",

@@ -1,7 +1,9 @@
 <template>
-  <div class="flex flex-col mx-auto w-60">
-    <input placeholder="Insira o nome da lista" @keyup.enter="$emit('text', textInput,clear)" v-model="textInput" type="text" class="bg-transparent border-solid border-b-2 border-[color:var(--primary)] mb-3"/>
-    <button class="bg-[color:var(--primary)] text-[color:var(--quaternary)] font-bold p-1" @click="$emit('text', textInput,clear)">CRIAR</button>
+  <div class="flex flex-col ">
+    <div class="border-solid border-b-2 border-[color:var(--primary)] mb-3 w-52">
+      <input placeholder="Insira o nome da lista" @change="!buttonName && $emit('text', textInput,clear)" @keyup.enter="$emit('text', textInput,clear)" v-model="textInput" type="text" class="z-20 bg-transparent w-52" :disabled='disabled'/>
+    </div>
+    <button v-if="buttonName" class="bg-[color:var(--primary)] text-[color:var(--quaternary)] font-bold p-1" @click="$emit('text', textInput,clear)" :disabled='disabled'>{{buttonName}}</button>
   </div>
 </template>
 
@@ -11,7 +13,12 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     sendTextFunction: Function,
-    value:String
+    value:String,
+    buttonName:String,
+    disabled:{
+      type:Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -29,4 +36,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+ input:focus{
+    outline: none;
+}
+</style>

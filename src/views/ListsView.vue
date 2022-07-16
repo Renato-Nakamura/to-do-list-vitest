@@ -37,7 +37,7 @@ export default defineComponent({
         Crie sua lista de tarefas
       </h2>
     </div>
-    <InputItem @text="callCreateList"></InputItem>
+    <InputItem class="mx-auto" @text="callCreateList" buttonName="CRIAR"></InputItem>
     <div></div>
   </div>
   <div class="flex flex-col items-center mt-20">

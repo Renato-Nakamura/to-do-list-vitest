@@ -1,5 +1,6 @@
 import { add_, type List,type Task } from "@/composables/utils";
-
+import { useToast } from "vue-toastification";
+const toast = useToast()
 export const getList = async (collectionName:string) => {
     let list
     try{
@@ -30,7 +31,9 @@ export const createList = async (listTitle:string)=> {
         })
         list = await res.json()
     }catch(e){
-        console.error("Não foi possível criar a Lista: " + e)
+        toast.error('teste de toast')
+
+        toast.error("Não foi possível criar a Lista: " + e)
         return undefined
     }
     return list
@@ -64,12 +67,7 @@ export const changeTask = async (listCollection:List,taskName:string,props:keyof
     }else if(typeof value =='string'){
         listCollection.tasks[indexTask]['title'] = value
     }
-    // console.log('oioi')
-    // for(let i in listCollection.tasks[indexTask]){
-    //     if(typeof listCollection.tasks[indexTask][i] == typeof value){
-    //         console.log(i,'rer')
-    //     }
-    // }
+
     try{
         const res = await fetch('https://to-do-back.vercel.app/'+listCollection._id,{
             headers: { 'Content-type': 'application/json' },
@@ -108,6 +106,7 @@ export const removeFromRecentLists =  (listTitle:string) => {
     if(!lists) return
     let listsArray:string[] =  JSON.parse(lists)
     const index = listsArray.indexOf(listTitle)
-    listsArray.splice(index,1)
+    console.log(index,listTitle)
+    if(index >= 0)listsArray.splice(index,1)
     localStorage.setItem('lists',JSON.stringify(listsArray))
 }
