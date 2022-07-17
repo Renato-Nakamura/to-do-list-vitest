@@ -55,8 +55,9 @@ export const createTask = async (title:string, listCollection: List | undefined 
             method:'PUT',
             body: JSON.stringify(listCollection)
         })
-        listCollection = await res.json()
-        if((await res.json()).message) throw (await res.json()).message
+        const resposta = await res.json()
+        listCollection = {...resposta}
+        // if((await res.json()).message) throw (await res.json()).message
 
     }catch(e){
         toast.error("Não foi possível criar a tarefa: " + e)
@@ -65,8 +66,9 @@ export const createTask = async (title:string, listCollection: List | undefined 
     return listCollection
 }
 
-export const changeTask = async (listCollection:List,taskName:string,props:keyof Task,value:string | boolean) => {
-    const indexTask = listCollection.tasks.findIndex((item)=>item.title == taskName)
+export const changeTask = async (listCollection:List,taskId:string,props:keyof Task,value:string | boolean) => {
+    const indexTask = listCollection.tasks.findIndex((item)=>item._id == taskId)
+    console.log(taskId,listCollection, indexTask)
     if(props == 'done' && typeof value == 'boolean'){
         listCollection.tasks[indexTask]['done'] = value
     }else if(typeof value =='string'){
@@ -79,13 +81,34 @@ export const changeTask = async (listCollection:List,taskName:string,props:keyof
             method:'PUT',
             body: JSON.stringify(listCollection)
         })
-        listCollection = await res.json()
-        if((await res.json()).message) throw (await res.json()).message
+        const resposta = await res.json()
+        listCollection = {...resposta}
+        // if((await res.json()).message) throw (await res.json()).message
     }catch(e){
         toast.error("Não foi possível alterar a tarefa: " + e)
         return undefined
     }
     return listCollection
+}
+
+export const removeTask = async (list:List | null | undefined,taskId:string | undefined)=>{
+    console.log(list, taskId)
+    if(!list || !taskId) return
+    const indexTask = list.tasks.findIndex((item)=>item._id == taskId)
+    list.tasks.splice(indexTask,1)
+    try{
+        const res = await fetch(BASE_URL+list._id,{
+            headers: { 'Content-type': 'application/json' },
+            method:'PUT',
+            body: JSON.stringify(list)
+        })
+        list = await res.json()
+        // if((await res.json()).message) throw (await res.json()).message
+    }catch(e){
+        toast.error("Não foi possível alterar a tarefa: " + e)
+        return undefined
+    }
+    return list
 }
 
 export const saveRecentLists = (listName:string)=>{

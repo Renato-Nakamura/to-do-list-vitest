@@ -14,7 +14,7 @@ export default defineComponent({
   methods: {
     changeTask,
     updateText(text:string){
-        if(this.listCollection)changeTask(this.listCollection, this.task?.title, 'title', text)
+        if(this.listCollection)changeTask(this.listCollection, this.task?._id, 'title', text)
     }
   },
 });
@@ -69,7 +69,7 @@ export default defineComponent({
           :checked="task?.done"
           @click="
             listCollection &&
-              changeTask(listCollection, task?.title, 'done', !task?.done)
+              changeTask(listCollection, task?._id, 'done', !task?.done)
           "
         />
         <svg

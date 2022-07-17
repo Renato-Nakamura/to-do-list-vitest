@@ -5,6 +5,7 @@ export const add_ = (word: string) => word.replace(/ /g, "_");
 export interface Task {
   title: string;
   done: boolean;
+  _id?:string
 }
 
 export interface List {
