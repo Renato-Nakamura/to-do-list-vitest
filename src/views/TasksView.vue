@@ -5,6 +5,8 @@ import type { List } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
 import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask, removeTask } from "@/services/listsService";
+import { useToast } from "vue-toastification";
+import ToastUndo from "../components/ToastUndo.vue"
 
 export default defineComponent({
     async beforeMount() {
@@ -24,7 +26,6 @@ export default defineComponent({
     changeTask,
     async callCreateTask(text:string, clearFunction:Function){
       const a = await createTask(text,this.listCollection)
-      console.log(a)
       this.updateTasks( a)
       clearFunction()
     },
@@ -32,12 +33,25 @@ export default defineComponent({
       this.listCollection =  JSON.parse(JSON.stringify(value))
       console.log(this.listCollection)
     },
-    swipeDelete(task:Task,index:number){
-      return (event:any)=>{
-        console.log('task',task)
-        removeTask(this.listCollection,task._id)
-
+    deleteRequest(task:Task,index:number){
+      console.log(task)
+      removeTask(this.listCollection,task._id)
+      this.toast({component:ToastUndo,
+      listeners: {
+        confirm: async (res:any)=> {
+          console.log('desfez', await res)
+          this.updateTasks(await res)
+          }
+      },
+      props:{
+        task:task,
+        listCollection:this.listCollection
       }
+      })
+      // return (event:any)=>{
+      //   console.log('task',task)
+      //   removeTask(this.listCollection,task._id)
+      // }
       // return (event:any)=>{
       //   console.log('oioi',e,event)
       //   let pX = event.changedTouches?event.changedTouches[0].clientX :event.x
@@ -47,9 +61,7 @@ export default defineComponent({
       //     }
       //     console.log(this.positionX)
       // }
-
-
-    }
+    },
   },
   components: {
     TaskItem,
@@ -59,7 +71,8 @@ export default defineComponent({
     return {
       listName: "",
       listCollection: null as List | undefined | null,
-      positionX :{}
+      positionX :{},
+      toast: useToast()
     };
   },
 
@@ -74,7 +87,7 @@ export default defineComponent({
       </h1>
       <InputItem @text="callCreateTask" buttonName="ADICIONAR"></InputItem>
     </div>
-    <div v-for="(tasks, i) in listCollection.tasks">
+    <div v-for="(tasks, i) in listCollection.tasks" class="flex justify-center">
       <!-- <div class="relative h-10  " v-touch:drag="swipeDelete(i, 'aa')">
         <div
           class="absolute w-full"
@@ -83,6 +96,7 @@ export default defineComponent({
           ]"
         >
           <TaskItem
+        v-touch:swipe.right="swipeDelete(tasks, i)"
             :task="tasks"
             :listCollection="listCollection"
             :key="tasks.title"
@@ -90,12 +104,29 @@ export default defineComponent({
         </div>
       </div> -->
       <!-- <Transition> -->
-        <TaskItem
-          v-touch:swipe.right="swipeDelete(tasks, i)"
-          :task="tasks"
-          :listCollection="listCollection"
-          :key="tasks._id"
-        ></TaskItem>
+      <TaskItem
+        :task="tasks"
+        :listCollection="listCollection"
+        :key="tasks._id"
+      ></TaskItem>
+      <!-- <div class="relative">
+        <Popper arrow class=" absolute top-7 ">
+          <button >
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          <template #content>
+            <button  class="flex items-center gap-1"><i class="fa-solid fa-trash"></i> Delete </button>
+          </template>
+        </Popper>
+      </div> -->
+      <div class="relative">
+        <button
+          v-on:click="deleteRequest(tasks, i)"
+          class=" absolute top-7 w-8"
+        >
+          <i class="fa-solid fa-trash  text-[color:var(--primary)]"></i>
+        </button>
+      </div>
       <!-- </Transition> -->
     </div>
   </div>

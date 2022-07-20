@@ -127,7 +127,7 @@ export default defineComponent({
   position: absolute;
   top: 2px;
   left: -10px;
-  /* width: 100%; */
+  width: 16rem;
   height: auto;
   margin: auto;
   fill: none;
