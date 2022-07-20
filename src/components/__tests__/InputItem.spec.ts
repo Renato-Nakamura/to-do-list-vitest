@@ -13,12 +13,12 @@ describe("input", () => {
     await button.trigger("click");
     const emit = wrapper.emitted("text");
     expect(emit).toBeTruthy();
-    expect(emit[0]).toContain("nova task");
+    if(emit) expect(emit[0]).toContain("nova task");
   });
   it("clear input", async () => {
     await input.setValue("nova task");
     await button.trigger("click");
-    const emit = wrapper.emitted("text");
+    const emit:any = wrapper.emitted("text");
     await emit[0][1]();
     expect(input.element.value).toBe("");
   });

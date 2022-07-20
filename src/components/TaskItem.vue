@@ -15,8 +15,22 @@ export default defineComponent({
     changeTask,
     updateText(text:string){
         if(this.listCollection)changeTask(this.listCollection, this.task?._id, 'title', text)
+    },
+
+  },
+    watch:{
+      task(newValue,oldValue){
+        this.title =newValue.title
     }
   },
+  data(){
+    return{
+      title:"",
+    }
+  },
+  beforeMount(){
+    this.title =this.task?.title
+  }
 });
 </script>
 
@@ -85,11 +99,11 @@ export default defineComponent({
         </svg>
         <div class="aaa"></div>
       </label>
-          <InputItem 
-            :value="task?.title"
-            @text="updateText"
-            class="todo__text ml-10 input-abs"
-          ></InputItem>
+      <InputItem
+        :value="title"
+        @text="updateText"
+        class="todo__text ml-10 input-abs"
+      ></InputItem>
     </div>
 
     <!-- <input type="text" :value="task?.title" @keyup.enter=""> -->
@@ -98,11 +112,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.input-abs{
+.input-abs {
   position: absolute;
   right: auto;
 }
-.aaa{
+.aaa {
   width: 200px;
   height: 1px;
 }
@@ -215,5 +229,4 @@ export default defineComponent({
   -webkit-animation-name: explode;
   animation-name: explode;
 }
-
 </style>

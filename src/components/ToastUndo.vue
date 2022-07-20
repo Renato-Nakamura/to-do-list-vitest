@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
-    <span> {{ task?.title }} Deletado com sucesso</span>
-    <button class="action" @click.stop="clicked" v-if="disabled">SEND!</button>
+  <div class="container flex justify-between">
+    <span> <strong>{{ task?.title.toUpperCase() }}</strong> :{{message}} </span>
+    <button class="font-bold text-[color:var(--primary)]" @click.stop="clicked" v-if="disabled">Desfazer</button>
   </div>
 </template>
 
@@ -12,6 +12,7 @@ import type { List } from "@/composables/utils";
 export default defineComponent({
   methods: {
     clicked() {
+      this.message = " restaurado com sucesso"
         this.disabled = false
         const res = createTask(this.task?.title,this.listCollection)
       this.$emit("confirm",res);
@@ -23,7 +24,8 @@ export default defineComponent({
   },
   data(){
     return {
-        disabled:true
+        disabled:true,
+        message:" deletado com sucesso"
     }
   }
 });

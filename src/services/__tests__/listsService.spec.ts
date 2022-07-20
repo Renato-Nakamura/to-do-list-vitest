@@ -4,23 +4,24 @@ import {add_} from '../../composables/utils'
 
 describe("List Service", () => {
   const title = 'teste vitest'
+  const listCollection = {"_id":"62ccb315392013f029015634","listTitle":"example 222","created":123,"tasks":[]}
 
-  it("get Collection list", () => {
+  it("get Collection list", async () => {
     const listTitle = "example";
-    const collection = getList(listTitle);
+    const collection = await getList(listTitle);
     expect(collection).toBeTruthy();
     expect(collection?.listTitle).toBe(listTitle);
   });
-  it("create List", () => {
+  it("create List", async () => {
     const listTitle = "example vitest";
-    const collection = createList(listTitle);
+    const collection = await createList(listTitle);
     expect(collection).toBeTruthy();
     expect(collection?.listTitle).toBe(add_(listTitle));
   });
-  it("adds task", () => {
+  it("adds task", async () => {
       const listTitle = "example";
       const taskTitle = "limpar";
-    const response = createTask(taskTitle,listTitle);
+    const response = await createTask(taskTitle,listCollection);
     expect(typeof response).toBe("object")
   });
   it('saves recent lists in localStorage', ()=>{

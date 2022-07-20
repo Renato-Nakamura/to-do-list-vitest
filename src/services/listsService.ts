@@ -1,7 +1,34 @@
 import { add_, type List,type Task } from "@/composables/utils";
 import { useToast } from "vue-toastification";
 const toast = useToast()
+
+const pubnub = new PubNub({
+    publishKey: import.meta.env.VITE_PUBLISHKEY,
+    subscribeKey: import.meta.env.VITE_SUBSCRIBEKEY,
+    uuid: "back001",
+  });
 const BASE_URL = 'https://to-do-back.vercel.app/'
+// const BASE_URL = 'http://localhost:3002/'
+
+export const connectPubNub = (list:any,updateFunction:Function,props:any) => {
+    pubnub.subscribe({
+        channels: [list._id]
+    })
+    pubnub.addListener({
+        status: function(statusEvent:any) {
+            if (statusEvent.category === "PNConnectedCategory") {
+                // publishSampleMessage();
+                console.log('conectado')
+            }
+        },
+        message: async function(msg:any) {
+            if(msg.message.text =='alterou'){
+                updateFunction(await getList(props))
+
+            }
+        }
+    })
+}
 export const getList = async (collectionName:string) => {
     let list
     try{
@@ -20,6 +47,7 @@ export const getList = async (collectionName:string) => {
 }
 
 export const createList = async (listTitle:string)=> {
+    if(!listTitle) return
     listTitle = add_(listTitle)
     let list:List | any = {
         listTitle,
@@ -43,7 +71,7 @@ export const createList = async (listTitle:string)=> {
 }
 
 export const createTask = async (title:string, listCollection: List | undefined | null) => {
-    if(!listCollection) return undefined
+    if(!listCollection || !title) return undefined
     let task:Task = {
         title,
         done:false

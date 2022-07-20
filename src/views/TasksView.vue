@@ -4,7 +4,7 @@ import { remove_, type Task } from "@/composables/utils";
 import type { List } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
-import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask, removeTask } from "@/services/listsService";
+import { getList, createTask, saveRecentLists, removeFromRecentLists, changeTask, removeTask, connectPubNub } from "@/services/listsService";
 import { useToast } from "vue-toastification";
 import ToastUndo from "../components/ToastUndo.vue"
 
@@ -12,6 +12,7 @@ export default defineComponent({
     async beforeMount() {
     this.listName = this.$route?.params.collection.toString();
     const res = await getList(this.listName);
+    connectPubNub(res,this.updateTasks,this.listName)
     if(!res){
       removeFromRecentLists(this.listName)
       this.listCollection = undefined
@@ -30,16 +31,18 @@ export default defineComponent({
       clearFunction()
     },
     updateTasks(value:List | undefined | null){
-      this.listCollection =  JSON.parse(JSON.stringify(value))
-      console.log(this.listCollection)
+      if(this.listCollection?.tasks){
+        const backup = [...JSON.parse(JSON.stringify(value)).tasks]
+        this.listCollection.tasks = []
+        this.listCollection.tasks = backup
+      }
+      // this.listCollection =  JSON.parse(JSON.stringify(value))
     },
     deleteRequest(task:Task,index:number){
-      console.log(task)
       removeTask(this.listCollection,task._id)
       this.toast({component:ToastUndo,
       listeners: {
         confirm: async (res:any)=> {
-          console.log('desfez', await res)
           this.updateTasks(await res)
           }
       },
@@ -48,19 +51,6 @@ export default defineComponent({
         listCollection:this.listCollection
       }
       })
-      // return (event:any)=>{
-      //   console.log('task',task)
-      //   removeTask(this.listCollection,task._id)
-      // }
-      // return (event:any)=>{
-      //   console.log('oioi',e,event)
-      //   let pX = event.changedTouches?event.changedTouches[0].clientX :event.x
-      //   this.positionX = {
-      //     position : pX,
-      //     index :e
-      //     }
-      //     console.log(this.positionX)
-      // }
     },
   },
   components: {
@@ -87,23 +77,7 @@ export default defineComponent({
       </h1>
       <InputItem @text="callCreateTask" buttonName="ADICIONAR"></InputItem>
     </div>
-    <div v-for="(tasks, i) in listCollection.tasks" class="flex justify-center">
-      <!-- <div class="relative h-10  " v-touch:drag="swipeDelete(i, 'aa')">
-        <div
-          class="absolute w-full"
-          :style="[
-            i == positionX.index ? { left: positionX.position + 'px' } : '',
-          ]"
-        >
-          <TaskItem
-        v-touch:swipe.right="swipeDelete(tasks, i)"
-            :task="tasks"
-            :listCollection="listCollection"
-            :key="tasks.title"
-          ></TaskItem>
-        </div>
-      </div> -->
-      <!-- <Transition> -->
+    <div v-for="(tasks, i) in listCollection.tasks" class="flex justify-center pr-11">
       <TaskItem
         :task="tasks"
         :listCollection="listCollection"
@@ -127,7 +101,6 @@ export default defineComponent({
           <i class="fa-solid fa-trash  text-[color:var(--primary)]"></i>
         </button>
       </div>
-      <!-- </Transition> -->
     </div>
   </div>
   <div v-else-if="listCollection === undefined">
