@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { remove_, type Task } from "@/composables/utils";
+import { add_, remove_, type Task } from "@/composables/utils";
 import type { List } from "@/composables/utils";
 import TaskItem from "../components/TaskItem.vue";
 import InputItem from "../components/InputItem.vue";
@@ -26,8 +26,8 @@ export default defineComponent({
     createTask,
     changeTask,
     async callCreateTask(text:string, clearFunction:Function){
-      const a = await createTask(text,this.listCollection)
-      this.updateTasks( a)
+      const res = await createTask(text,this.listCollection)
+      this.updateTasks(res)
       clearFunction()
     },
     updateTasks(value:List | undefined | null){
@@ -52,6 +52,18 @@ export default defineComponent({
       }
       })
     },
+    async share(){
+      navigator.clipboard.writeText(
+        `Venha fazer parte da minha lista de tarefas! ✔️${this.listCollection?.listTitle} em: https://mistylisting.web.app/${add_(this.listCollection?.listTitle? this.listCollection?.listTitle:"")}`
+      )
+      const shareData = {
+        title:"Venha fazer parte da minha lista de tarefas",
+        text:`Criei minha lista ${this.listCollection?.listTitle} no Misty ✔️. Acesse em:`,
+        url: `https://mistylisting.web.app/${add_(this.listCollection?.listTitle? this.listCollection?.listTitle:"")}`
+      }
+      await navigator.share(shareData)
+      this.toast('✔️Link de compartilhamento copiado!')
+    }
   },
   components: {
     TaskItem,
@@ -71,13 +83,22 @@ export default defineComponent({
 
 <template>
   <div v-if="listCollection" class="flex flex-col h-full">
+    <header class="flex justify-between py-3 px-5">
+      <div></div>
+      <button @click="share">
+        <i class="fa-solid fa-share-from-square text-[color:var(--primary)] text-xl"></i>
+      </button>
+    </header>
     <div class="mx-auto mb-10">
       <h1 class="text-5xl text-center py-5 mt-20">
         {{ remove_(listCollection.listTitle) }}
       </h1>
       <InputItem @text="callCreateTask" buttonName="ADICIONAR"></InputItem>
     </div>
-    <div v-for="(tasks, i) in listCollection.tasks" class="flex justify-center pr-11">
+    <div
+      v-for="(tasks, i) in listCollection.tasks"
+      class="flex justify-center pr-11"
+    >
       <TaskItem
         :task="tasks"
         :listCollection="listCollection"
