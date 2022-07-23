@@ -1,7 +1,7 @@
 import { add_, type List,type Task } from "@/composables/utils";
 import { useToast } from "vue-toastification";
 const toast = useToast()
-
+// @ts-ignore
 const pubnub = new PubNub({
     publishKey: import.meta.env.VITE_PUBLISHKEY,
     subscribeKey: import.meta.env.VITE_SUBSCRIBEKEY,
